@@ -60,7 +60,7 @@ function initializeServiceWorker() {
   // STEPS B6 ONWARDS WILL BE IN /sw.js
   window.addEventListener('load',()=>{
     try{
-      const registration = navigator.serviceWorker.register("/sw.js");
+      const registration = navigator.serviceWorker.register("/Lab7_Starter/sw.js");
       if(registration.active){
         console.log("service worker has been successfully registered");
       }

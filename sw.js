@@ -28,9 +28,9 @@ self.addEventListener('activate', function (event) {
 
 // Intercept fetch requests and cache them
 self.addEventListener('fetch', function (event) {
-  event.respondWith(caches.open(CACHE_NAME).then((cache)=>{
-    return cache.match(event.request).then((cachedResponse)=>{
-      return cachedResponse || fetch(event.request).then(async (fetchedResponse,failed)=>{
+  event.respondWith(caches.open(CACHE_NAME).then(async (cache)=>{
+    return await cache.match(event.request).then(async (cachedResponse)=>{
+      return cachedResponse || await fetch(event.request).then(async (fetchedResponse,failed)=>{
         await cache.put(event.request, fetchedResponse.clone());
         return fetchedResponse;
       });

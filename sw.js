@@ -28,14 +28,29 @@ self.addEventListener('activate', function (event) {
 
 // Intercept fetch requests and cache them
 self.addEventListener('fetch', async function (event) {
-  await event.respondWith(caches.open(CACHE_NAME).then(async (cache)=>{
-    return await cache.match(event.request).then((cachedResponse)=>{
-      return cachedResponse || fetch(event.request).then(async (fetchedResponse,failed)=>{
-        await cache.put(event.request, fetchedResponse.clone());
-        return fetchedResponse;
-      });
-    });
-  }));
+  let CACHE_RESPOND = await event.respondWith(cache.open(CACHE_NAME));
+  CACHE_RESPOND.then((cache)=>{
+    let CACHED = cache.match(event.request);
+    CACHED.then((cachedResponse)=>{
+      if(cachedResponse){
+        return cachedResponse;
+      }else{
+        let fetchedResult = fetch(event.request);
+        fetchedResult.then((FetchResult)=>{
+          cache.put(event.request,FetchResult.clone());
+          return FetchResult;
+        })
+      }
+    })
+  });
+  // await event.respondWith(caches.open(CACHE_NAME).then(async (cache)=>{
+  //   return await cache.match(event.request).then((cachedResponse)=>{
+  //     return cachedResponse || fetch(event.request).then(async (fetchedResponse,failed)=>{
+  //       await cache.put(event.request, fetchedResponse.clone());
+  //       return fetchedResponse;
+  //     });
+  //   });
+  // }));
 });
 
   // We added some known URLs to the cache above, but tracking down every
